@@ -103,3 +103,7 @@ fabric.properties
 !.idea/runConfigurations
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij+all
+/.idea/codeStyles/codeStyleConfig.xml
+/prisma/migrations/20230210014950_init/migration.sql
+/prisma/migrations/migration_lock.toml
+/.idea/codeStyles/Project.xml
