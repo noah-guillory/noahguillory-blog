@@ -27,7 +27,7 @@ export default function App() {
   return (
     <html lang="en" className="h-full">
       <head>
-        <script defer data-domain="noahguillory.com" src="http://analytics.noahguillory.me/js/script.js"></script>
+        <script defer data-domain="noahguillory.com" src="https://analytics.noahguillory.me/js/script.js"></script>
         <Meta />
         <Links />
       </head>
