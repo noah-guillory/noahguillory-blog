@@ -19,7 +19,7 @@ const rawGithubFileUrl = ({
   repo: string;
   ref: string;
   path: string;
-}) => `https://raw.githubusercontent.com/${owner}/${repo}/${ref}/${path}`;
+}) => `https://raw.githubusercontent.com/${owner}/${repo}/${ref}${path}`;
 
 export async function downloadFile({
   contentDir,
@@ -32,11 +32,10 @@ export async function downloadFile({
     owner: OWNER,
     repo: REPOSITORY,
     ref: REF,
-    path: `${contentDir}/${slug}`,
+    path: `/content${contentDir}/${slug}.mdx`,
   });
 
   const response = await fetch(fileUrl);
-
   if (response.status === 404) {
     throw new Error(`File at URL ${fileUrl} not found`);
   }
