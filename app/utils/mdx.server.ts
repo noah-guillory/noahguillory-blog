@@ -2,6 +2,8 @@ import { LocalMdxFetcher } from "~/utils/mdx-loaders/local.server";
 import { compileMdx } from "~/utils/build-mdx.server";
 import { GithubMdxFetcher } from "~/utils/mdx-loaders/github.server";
 
+const mdxFetcher = process.env.NODE_ENV === 'production' ? GithubMdxFetcher : LocalMdxFetcher;
+
 export async function getMdxPage({
   contentDir,
   slug,
@@ -9,7 +11,7 @@ export async function getMdxPage({
   contentDir: string;
   slug: string;
 }) {
-  const fileContent = await GithubMdxFetcher.getMdxFile({ contentDir, slug });
+  const fileContent = await mdxFetcher.getMdxFile({ contentDir, slug });
 
   if (!fileContent) {
     throw new Error("File not found");
@@ -19,7 +21,7 @@ export async function getMdxPage({
 }
 
 export async function getMdxFileList(directory: string) {
-  const dirList = await GithubMdxFetcher.getMdxFileList(directory);
+  const dirList = await mdxFetcher.getMdxFileList(directory);
 
   return await Promise.all(
     dirList.map(async (file) => {
