@@ -73,8 +73,8 @@ export const GithubMdxFetcher: IMdxFetcher = class {
         path: `content${directory}`,
       });
 
-      // @ts-ignore
       return response.data
+        // @ts-ignore
         .filter((item: { type: string }) => item.type === "file")
         .map((file: { name: string }) => file.name.replace(/\.mdx$/, ""));
     } catch (e) {
