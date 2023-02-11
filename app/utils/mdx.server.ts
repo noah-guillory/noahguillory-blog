@@ -1,8 +1,20 @@
 import { LocalMdxFetcher } from "~/utils/mdx-loaders/local.server";
 import { compileMdx } from "~/utils/build-mdx.server";
 import { GithubMdxFetcher } from "~/utils/mdx-loaders/github.server";
+import { cache, cachified, lruCache } from "~/utils/cache.server";
+import { CachifiedOptions } from "~/utils/interfaces";
 
-const mdxFetcher = process.env.NODE_ENV === 'production' ? GithubMdxFetcher : LocalMdxFetcher;
+
+
+const checkCompiledValue = (value: unknown) =>
+  typeof value === 'object' &&
+  (value === null || ('code' in value && 'frontmatter' in value))
+
+const defaultTTL = 1000 * 60 * 60 * 24 * 14
+const defaultStaleWhileRevalidate = 1000 * 60 * 60 * 24 * 30
+
+const mdxFetcher =
+  process.env.NODE_ENV !== "production" ? GithubMdxFetcher : LocalMdxFetcher;
 
 export async function getMdxPage({
   contentDir,
@@ -10,22 +22,40 @@ export async function getMdxPage({
 }: {
   contentDir: string;
   slug: string;
-}) {
-  const fileContent = await mdxFetcher.getMdxFile({ contentDir, slug });
+}, options: CachifiedOptions) {
+  const {forceFresh, ttl = defaultTTL, request} = options
+  const cacheKey = `mdx-page:${contentDir}:${slug}:compiled`;
 
-  if (!fileContent) {
-    throw new Error("File not found");
-  }
 
-  return compileMdx(fileContent);
+
+  return await cachified({
+    key: cacheKey,
+    cache,
+    request,
+    ttl,
+    staleWhileRevalidate: defaultStaleWhileRevalidate,
+    forceFresh,
+    checkValue: checkCompiledValue,
+    getFreshValue: async () => {
+      const fileContent = await mdxFetcher.getMdxFileCached({ contentDir, slug }, options);
+
+      if (!fileContent) {
+        throw new Error("File not found");
+      }
+
+      return compileMdx(fileContent);
+    }
+  })
 }
 
-export async function getMdxFileList(directory: string) {
-  const dirList = await mdxFetcher.getMdxFileList(directory);
+export async function getMdxFileList(directory: string, options: CachifiedOptions) {
+  const {forceFresh, ttl = defaultTTL, request} = options
+
+  const dirList = await mdxFetcher.getMdxFileListCached(directory, options);
 
   return await Promise.all(
     dirList.map(async (file) => {
-      const page = await getMdxPage({ contentDir: directory, slug: file });
+      const page = await getMdxPage({ contentDir: directory, slug: file }, {});
       return {
         ...page,
         slug: file,

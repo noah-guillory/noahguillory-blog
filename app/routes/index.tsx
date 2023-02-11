@@ -4,7 +4,7 @@ import { json } from "@remix-run/node";
 import { getMdxFileList } from "~/utils/mdx.server";
 
 export async function loader({ request, params }: LoaderArgs) {
-  const postList = await getMdxFileList("/blog");
+  const postList = await getMdxFileList("/blog", { request });
 
   return json({
     postList,

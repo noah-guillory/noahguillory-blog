@@ -1,5 +1,6 @@
-import type { IMdxFetcher } from "~/utils/interfaces";
+import type { CachifiedOptions, IMdxFetcher } from "~/utils/interfaces";
 import { Octokit } from "octokit";
+import { cachified, lruCache } from "~/utils/cache.server";
 
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
@@ -8,6 +9,9 @@ const octokit = new Octokit({
 const REF = "main";
 const REPOSITORY = "noahguillory-blog";
 const OWNER = "noah-guillory";
+
+const defaultTTL = 1000 * 60 * 60 * 24 * 14
+const defaultStaleWhileRevalidate = 1000 * 60 * 60 * 24 * 30
 
 const rawGithubFileUrl = ({
   owner,
@@ -44,42 +48,78 @@ export async function downloadFile({
 }
 
 export const GithubMdxFetcher: IMdxFetcher = class {
-  static async getMdxFile({
+  static async getMdxFileCached({
     contentDir,
     slug,
   }: {
     contentDir: string;
     slug: string;
-  }): Promise<string | null> {
-    try {
-      const fileContents = await downloadFile({ contentDir, slug });
+  }, options: CachifiedOptions): Promise<string | null> {
 
-      return fileContents;
-    } catch (e) {
-      const error = e as Error;
-      if (error.message.includes("not found")) {
-        return null;
-      } else {
-        throw e;
+    const key = `mdx-file:${contentDir}:${slug}:download`;
+
+    return await cachified({
+      ...options,
+      ttl: defaultTTL,
+      staleWhileRevalidate: defaultStaleWhileRevalidate,
+      key,
+      cache: lruCache,
+      checkValue: (value: unknown) => {
+        if (typeof value !== 'string') {
+          return 'value is not a string';
+        }
+
+        return true
+      },
+      getFreshValue: async () => {
+        try {
+          const fileContents = await downloadFile({ contentDir, slug });
+
+          return fileContents;
+        } catch (e) {
+          const error = e as Error;
+          if (error.message.includes("not found")) {
+            return null;
+          } else {
+            throw e;
+          }
+        }
       }
-    }
+    })
+
+
   }
 
-  static async getMdxFileList(directory: string): Promise<string[]> {
-    try {
-      const response = await octokit.rest.repos.getContent({
-        owner: OWNER,
-        repo: REPOSITORY,
-        path: `content${directory}`,
-      });
+  static async getMdxFileListCached(directory: string, options: CachifiedOptions): Promise<string[]> {
+    const key = `mdx-file:${directory}:file-list`;
 
-      return response.data
-        // @ts-ignore
-        .filter((item: { type: string }) => item.type === "file")
-        .map((file: { name: string }) => file.name.replace(/\.mdx$/, ""));
-    } catch (e) {
-      console.error(e);
-      return [];
-    }
+    return await cachified({
+      ...options,
+      key,
+      ttl: defaultTTL,
+      staleWhileRevalidate: defaultStaleWhileRevalidate,
+      cache: lruCache,
+      getFreshValue: async () => {
+        try {
+          const response = await octokit.rest.repos.getContent({
+            owner: OWNER,
+            repo: REPOSITORY,
+            path: `content${directory}`,
+          });
+
+          return (
+            response.data
+              // @ts-ignore
+              .filter((item: { type: string }) => item.type === "file")
+              .map((file: { name: string }) => file.name.replace(/\.mdx$/, ""))
+          );
+        } catch (e) {
+          console.error(e);
+          return [];
+        }
+      }
+    })
+
+
   }
 };

@@ -14,6 +14,7 @@ module.exports = {
     "unist-util-visit-parents",
     "unist-util-find-after",
     "unist-util-is",
+    "cachified",
   ],
   ignoredRouteFiles: ["**/.*", "**/*.css", "**/*.test.{js,jsx,ts,tsx}"],
 };
