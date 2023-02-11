@@ -6,7 +6,7 @@ import { verboseReporter, lruCacheAdapter } from "cachified";
 import * as C from "cachified";
 import * as fs from "fs";
 
-const CACHE_DATABASE_PATH = process.env.CACHE_DATABASE_PATH ?? "./tmp/cache.db";
+const CACHE_DATABASE_PATH = process.env.CACHE_DATABASE_PATH ?? "/tmp/cache.db";
 
 declare global {
   // This preserves the LRU cache during development
