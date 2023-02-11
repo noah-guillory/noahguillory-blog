@@ -11,6 +11,7 @@ import {
 } from "@remix-run/react";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
+import NavBar from "~/components/NavBar";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
@@ -18,25 +19,29 @@ export const links: LinksFunction = () => {
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
-  title: "Remix Notes",
-  viewport: "width=device-width,initial-scale=1",
+  title: "Noah's Thoughts",
+  viewport: "width=device-width,initial-scale=1"
 });
-
 
 export default function App() {
   return (
     <html lang="en" className="h-full">
-      <head>
-        <script defer data-domain="noahguillory.com" src="https://analytics.noahguillory.me/js/script.js"></script>
-        <Meta />
-        <Links />
-      </head>
-      <body className="h-full">
-        <Outlet />
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
-      </body>
+    <head>
+      <script
+        defer
+        data-domain="noahguillory.com"
+        src="https://analytics.noahguillory.me/js/script.js"
+      ></script>
+      <Meta />
+      <Links />
+    </head>
+    <body className="bg-white">
+    <NavBar />
+    <Outlet />
+    <ScrollRestoration />
+    <Scripts />
+    <LiveReload />
+    </body>
     </html>
   );
 }

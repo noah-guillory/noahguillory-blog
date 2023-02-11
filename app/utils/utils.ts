@@ -41,3 +41,21 @@ export function useMatchesData(
   );
   return route?.data;
 }
+
+/**
+ * Truncates a string to a given max length and suffixes it.
+ * @param text - Text to truncate
+ * @param maxLength - Max length of truncated text
+ * @param truncateSuffix - Suffix to follow the truncated text. Defaults to '...'
+ */
+export function truncateText(
+  text: string,
+  maxLength: number,
+  truncateSuffix: string = "..."
+) {
+  if (text.length <= maxLength) {
+    return text;
+  }
+
+  return text.slice(0, maxLength) + truncateSuffix;
+}

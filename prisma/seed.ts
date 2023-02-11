@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { faker } from '@faker-js/faker'
+import { faker } from "@faker-js/faker";
 import slugify from "slugify";
 
 const prisma = new PrismaClient();
@@ -11,9 +11,12 @@ async function seed() {
       data: {
         title,
         slug: slugify(title, { lower: true }),
-        body: faker.lorem.paragraphs(faker.datatype.number({ min: 2, max: 10 }), '\n'),
+        body: faker.lorem.paragraphs(
+          faker.datatype.number({ min: 2, max: 10 }),
+          "\n"
+        )
       }
-    })
+    });
   }
 }
 
