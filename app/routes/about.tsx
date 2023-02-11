@@ -1,14 +1,12 @@
 import type { LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import invariant from "tiny-invariant";
-import { useLoaderData } from "@remix-run/react";
 import { getMdxPage } from "~/utils/mdx.server";
+import { useLoaderData } from "@remix-run/react";
 import { getMDXComponent } from "mdx-bundler/client";
 
 export async function loader({ request, params }: LoaderArgs) {
-  invariant(params.slug, "Slug not found");
-
-  const page = await getMdxPage({ contentDir: "/blog", slug: params.slug });
+  const page = await getMdxPage({ contentDir: "/about", slug: "about_me" });
 
   if (!page) {
     throw new Response("Not Found", {
@@ -23,27 +21,18 @@ export async function loader({ request, params }: LoaderArgs) {
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return {
-    title: data.page.frontmatter.title,
-    description: data.page.frontmatter.subtitle,
+    title: "About Me",
+    description: "A rundown about Noah",
   };
 };
 
-export default function BlogPostPage() {
+export default function AboutPage() {
   const { page } = useLoaderData<typeof loader>();
-  const { frontmatter, code } = page;
+  const { code } = page;
   const Component = getMDXComponent(code);
   return (
     <article className="format mx-auto mt-8 text-gray-900 lg:format-lg">
-      <h1>{page.frontmatter.title}</h1>
       <Component />
     </article>
-  );
-}
-
-export function CatchBoundary() {
-  return (
-    <div>
-      <h2>Post not found</h2>
-    </div>
   );
 }

@@ -4,9 +4,9 @@ import fs from "fs/promises";
 const BASE_DIR = "/Users/noah/Projects/noahguillory-blog/content";
 export const LocalMdxFetcher: IMdxFetcher = class {
   static async getMdxFile({
-                            contentDir,
-                            slug
-                          }: {
+    contentDir,
+    slug,
+  }: {
     contentDir: string;
     slug: string;
   }): Promise<string | null> {

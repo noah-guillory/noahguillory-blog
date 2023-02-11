@@ -105,3 +105,4 @@ fabric.properties
 # End of https://www.toptal.com/developers/gitignore/api/intellij+all
 /.idea/codeStyles/codeStyleConfig.xml
 /.idea/codeStyles/Project.xml
+.op/

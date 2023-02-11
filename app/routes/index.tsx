@@ -7,7 +7,7 @@ export async function loader({ request, params }: LoaderArgs) {
   const postList = await getMdxFileList("/blog");
 
   return json({
-    postList
+    postList,
   });
 }
 
@@ -34,7 +34,7 @@ export default function Index() {
         <section className="flex w-full flex-col items-center px-3">
           {postList.map((post) => (
             <article
-              className="my-4 flex flex-col shadow"
+              className="my-4 flex w-3/4 flex-col shadow"
               key={post.frontmatter.title}
             >
               <Link
@@ -44,7 +44,7 @@ export default function Index() {
                 {post.frontmatter.title}
               </Link>
               <Link to={`/blog/${post.slug}`} className="pb-3 text-sm">
-                By Noah, Published on April 25th, 2020
+                Published {post.frontmatter.publishDate}
               </Link>
               <p className="pb-6">{post.frontmatter.subtitle}</p>
               <Link

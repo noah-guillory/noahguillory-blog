@@ -1,8 +1,8 @@
 declare class _IMdxFetcher {
   static getMdxFile({
-                      contentDir,
-                      slug
-                    }: {
+    contentDir,
+    slug,
+  }: {
     contentDir: string;
     slug: string;
   }): Promise<string | null>;

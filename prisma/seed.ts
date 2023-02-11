@@ -14,8 +14,8 @@ async function seed() {
         body: faker.lorem.paragraphs(
           faker.datatype.number({ min: 2, max: 10 }),
           "\n"
-        )
-      }
+        ),
+      },
     });
   }
 }

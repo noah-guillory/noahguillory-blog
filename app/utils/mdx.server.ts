@@ -1,43 +1,32 @@
-import { bundleMDX } from "mdx-bundler";
-import { LocalMdxFetcher } from "~/utils/local.server";
-
-export type FrontMatter = {
-  title: string;
-  subtitle: string;
-};
+import { LocalMdxFetcher } from "~/utils/mdx-loaders/local.server";
+import { compileMdx } from "~/utils/build-mdx.server";
+import { GithubMdxFetcher } from "~/utils/mdx-loaders/github.server";
 
 export async function getMdxPage({
-                                   contentDir,
-                                   slug
-                                 }: {
+  contentDir,
+  slug,
+}: {
   contentDir: string;
   slug: string;
 }) {
-  // const rawFile = await downloadFile({contentDir, slug});
-  // return await bundleMDX<FrontMatter>({
-  //   source: rawFile,
-  // })
-
-  const fileContent = await LocalMdxFetcher.getMdxFile({ contentDir, slug });
+  const fileContent = await GithubMdxFetcher.getMdxFile({ contentDir, slug });
 
   if (!fileContent) {
     throw new Error("File not found");
   }
 
-  return bundleMDX<FrontMatter>({
-    source: fileContent
-  });
+  return compileMdx(fileContent);
 }
 
 export async function getMdxFileList(directory: string) {
-  const dirList = await LocalMdxFetcher.getMdxFileList(directory);
+  const dirList = await GithubMdxFetcher.getMdxFileList(directory);
 
   return await Promise.all(
     dirList.map(async (file) => {
       const page = await getMdxPage({ contentDir: directory, slug: file });
       return {
         ...page,
-        slug: file
+        slug: file,
       };
     })
   );
