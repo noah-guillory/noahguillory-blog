@@ -70,7 +70,7 @@ export const GithubMdxFetcher: IMdxFetcher = class {
       const response = await octokit.rest.repos.getContent({
         owner: OWNER,
         repo: REPOSITORY,
-        path: `content/${directory}`,
+        path: `content${directory}`,
       });
 
       // @ts-ignore
