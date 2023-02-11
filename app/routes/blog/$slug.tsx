@@ -9,7 +9,7 @@ export async function loader({ request, params }: LoaderArgs) {
   invariant(params.slug, "Slug not found");
 
   const page = await getMdxPage(
-    { contentDir: "/blog", slug: params.slug },
+    { contentDir: "blog", slug: params.slug },
     { request }
   );
 

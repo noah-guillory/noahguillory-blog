@@ -5,8 +5,11 @@ import { getMdxPage } from "~/utils/mdx.server";
 import { useLoaderData } from "@remix-run/react";
 import { getMDXComponent } from "mdx-bundler/client";
 
-export async function loader({ request, params }: LoaderArgs) {
-  const page = await getMdxPage({ contentDir: "/about", slug: "about_me" });
+export async function loader({ request }: LoaderArgs) {
+  const page = await getMdxPage(
+    { contentDir: "about", slug: "about_me" },
+    { request }
+  );
 
   if (!page) {
     throw new Response("Not Found", {

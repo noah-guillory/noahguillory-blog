@@ -1,12 +1,8 @@
-import type { CacheEntry ,
-  Cache as CachifiedCache} from "cachified";
+import type { CacheEntry, Cache as CachifiedCache } from "cachified";
 import LRUCache from "lru-cache";
 import type BetterSqlite3 from "better-sqlite3";
 import Database from "better-sqlite3";
-import {
-  verboseReporter,
-  lruCacheAdapter
-} from "cachified";
+import { verboseReporter, lruCacheAdapter } from "cachified";
 import * as C from "cachified";
 import * as fs from "fs";
 

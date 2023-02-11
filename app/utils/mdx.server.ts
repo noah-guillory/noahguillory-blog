@@ -12,7 +12,7 @@ const defaultTTL = 1000 * 60 * 60 * 24 * 14;
 const defaultStaleWhileRevalidate = 1000 * 60 * 60 * 24 * 30;
 
 const mdxFetcher =
-  process.env.NODE_ENV !== "production" ? GithubMdxFetcher : LocalMdxFetcher;
+  process.env.NODE_ENV === "production" ? GithubMdxFetcher : LocalMdxFetcher;
 
 export async function getMdxPage(
   {
@@ -29,7 +29,7 @@ export async function getMdxPage(
 
   return await cachified({
     key: cacheKey,
-    cache,
+    cache: lruCache,
     request,
     ttl,
     staleWhileRevalidate: defaultStaleWhileRevalidate,

@@ -36,7 +36,7 @@ export async function downloadFile({
     owner: OWNER,
     repo: REPOSITORY,
     ref: REF,
-    path: `/content${contentDir}/${slug}.mdx`,
+    path: `/content/${contentDir}/${slug}.mdx`,
   });
 
   const response = await fetch(fileUrl);
@@ -107,7 +107,7 @@ export const GithubMdxFetcher: IMdxFetcher = class {
           const response = await octokit.rest.repos.getContent({
             owner: OWNER,
             repo: REPOSITORY,
-            path: `content${directory}`,
+            path: `content/${directory}`,
           });
 
           return (

@@ -1,15 +1,18 @@
-import type { IMdxFetcher } from "~/utils/interfaces";
+import type { CachifiedOptions, IMdxFetcher } from "~/utils/interfaces";
 import fs from "fs/promises";
 
 const BASE_DIR = "/Users/noah/Projects/noahguillory-blog/content";
 export const LocalMdxFetcher: IMdxFetcher = class {
-  static async getMdxFile({
-    contentDir,
-    slug,
-  }: {
-    contentDir: string;
-    slug: string;
-  }): Promise<string | null> {
+  static async getMdxFileCached(
+    {
+      contentDir,
+      slug,
+    }: {
+      contentDir: string;
+      slug: string;
+    },
+    options: CachifiedOptions
+  ): Promise<string | null> {
     try {
       const fileContents = await fs.readFile(
         `${BASE_DIR}/${contentDir}/${slug}.mdx`
@@ -27,7 +30,10 @@ export const LocalMdxFetcher: IMdxFetcher = class {
     }
   }
 
-  static async getMdxFileList(directory: string): Promise<string[]> {
+  static async getMdxFileListCached(
+    directory: string,
+    options: CachifiedOptions
+  ): Promise<string[]> {
     try {
       const list = await fs.readdir(`${BASE_DIR}/${directory}`);
       return list.map((fileName) => fileName.replace(/\.mdx$/, ""));
