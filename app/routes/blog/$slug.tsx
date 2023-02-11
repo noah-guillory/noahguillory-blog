@@ -8,7 +8,10 @@ import { getMDXComponent } from "mdx-bundler/client";
 export async function loader({ request, params }: LoaderArgs) {
   invariant(params.slug, "Slug not found");
 
-  const page = await getMdxPage({ contentDir: "/blog", slug: params.slug }, { request });
+  const page = await getMdxPage(
+    { contentDir: "/blog", slug: params.slug },
+    { request }
+  );
 
   if (!page) {
     throw new Response("Not Found", {

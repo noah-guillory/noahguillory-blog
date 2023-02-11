@@ -1,12 +1,16 @@
-import type { CacheEntry } from "cachified";
+import type { CacheEntry ,
+  Cache as CachifiedCache} from "cachified";
 import LRUCache from "lru-cache";
-import type BetterSqlite3 from 'better-sqlite3'
-import Database from 'better-sqlite3'
-import { verboseReporter, lruCacheAdapter, Cache as CachifiedCache } from "cachified";
+import type BetterSqlite3 from "better-sqlite3";
+import Database from "better-sqlite3";
+import {
+  verboseReporter,
+  lruCacheAdapter
+} from "cachified";
 import * as C from "cachified";
 import * as fs from "fs";
 
-const CACHE_DATABASE_PATH = process.env.CACHE_DATABASE_PATH ?? './tmp/cache.db'
+const CACHE_DATABASE_PATH = process.env.CACHE_DATABASE_PATH ?? "./tmp/cache.db";
 
 declare global {
   // This preserves the LRU cache during development
@@ -17,12 +21,11 @@ declare global {
 
 const cacheDb = (global.__cacheDb = global.__cacheDb
   ? global.__cacheDb
-  : createDatabase())
-
+  : createDatabase());
 
 function createDatabase(tryAgain = true): BetterSqlite3.Database {
-  console.log(CACHE_DATABASE_PATH)
-  const db = new Database(CACHE_DATABASE_PATH)
+  console.log(CACHE_DATABASE_PATH);
+  const db = new Database(CACHE_DATABASE_PATH);
 
   try {
     // create cache table with metadata JSON column and value JSON column if it does not exist already
@@ -32,18 +35,18 @@ function createDatabase(tryAgain = true): BetterSqlite3.Database {
         metadata TEXT,
         value TEXT
       )
-    `)
+    `);
   } catch (error: unknown) {
-    fs.unlinkSync(CACHE_DATABASE_PATH)
+    fs.unlinkSync(CACHE_DATABASE_PATH);
     if (tryAgain) {
       console.error(
-        `Error creating cache database, deleting the file at "${CACHE_DATABASE_PATH}" and trying again...`,
-      )
-      return createDatabase(false)
+        `Error creating cache database, deleting the file at "${CACHE_DATABASE_PATH}" and trying again...`
+      );
+      return createDatabase(false);
     }
-    throw error
+    throw error;
   }
-  return db
+  return db;
 }
 
 const lru = (global.__lruCache = global.__lruCache
@@ -53,33 +56,32 @@ const lru = (global.__lruCache = global.__lruCache
 export const lruCache = C.lruCacheAdapter(lru);
 
 export const cache: CachifiedCache = {
-  name: 'SQLite cache',
+  name: "SQLite cache",
   get(key) {
     const result = cacheDb
-      .prepare('SELECT value, metadata FROM cache WHERE key = ?')
-      .get(key)
-    if (!result) return null
+      .prepare("SELECT value, metadata FROM cache WHERE key = ?")
+      .get(key);
+    if (!result) return null;
     return {
       metadata: JSON.parse(result.metadata),
       value: JSON.parse(result.value),
-    }
+    };
   },
   async set(key, entry) {
     cacheDb
       .prepare(
-        'INSERT OR REPLACE INTO cache (key, value, metadata) VALUES (@key, @value, @metadata)',
+        "INSERT OR REPLACE INTO cache (key, value, metadata) VALUES (@key, @value, @metadata)"
       )
       .run({
         key,
         value: JSON.stringify(entry.value),
         metadata: JSON.stringify(entry.metadata),
-      })
+      });
   },
   async delete(key) {
-    cacheDb.prepare('DELETE FROM cache WHERE key = ?').run(key)
+    cacheDb.prepare("DELETE FROM cache WHERE key = ?").run(key);
   },
-}
-
+};
 
 export async function shouldForceFresh({
   forceFresh,

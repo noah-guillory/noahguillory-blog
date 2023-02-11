@@ -10,8 +10,8 @@ const REF = "main";
 const REPOSITORY = "noahguillory-blog";
 const OWNER = "noah-guillory";
 
-const defaultTTL = 1000 * 60 * 60 * 24 * 14
-const defaultStaleWhileRevalidate = 1000 * 60 * 60 * 24 * 30
+const defaultTTL = 1000 * 60 * 60 * 24 * 14;
+const defaultStaleWhileRevalidate = 1000 * 60 * 60 * 24 * 30;
 
 const rawGithubFileUrl = ({
   owner,
@@ -48,14 +48,16 @@ export async function downloadFile({
 }
 
 export const GithubMdxFetcher: IMdxFetcher = class {
-  static async getMdxFileCached({
-    contentDir,
-    slug,
-  }: {
-    contentDir: string;
-    slug: string;
-  }, options: CachifiedOptions): Promise<string | null> {
-
+  static async getMdxFileCached(
+    {
+      contentDir,
+      slug,
+    }: {
+      contentDir: string;
+      slug: string;
+    },
+    options: CachifiedOptions
+  ): Promise<string | null> {
     const key = `mdx-file:${contentDir}:${slug}:download`;
 
     return await cachified({
@@ -65,11 +67,11 @@ export const GithubMdxFetcher: IMdxFetcher = class {
       key,
       cache: lruCache,
       checkValue: (value: unknown) => {
-        if (typeof value !== 'string') {
-          return 'value is not a string';
+        if (typeof value !== "string") {
+          return "value is not a string";
         }
 
-        return true
+        return true;
       },
       getFreshValue: async () => {
         try {
@@ -84,13 +86,14 @@ export const GithubMdxFetcher: IMdxFetcher = class {
             throw e;
           }
         }
-      }
-    })
-
-
+      },
+    });
   }
 
-  static async getMdxFileListCached(directory: string, options: CachifiedOptions): Promise<string[]> {
+  static async getMdxFileListCached(
+    directory: string,
+    options: CachifiedOptions
+  ): Promise<string[]> {
     const key = `mdx-file:${directory}:file-list`;
 
     return await cachified({
@@ -117,9 +120,7 @@ export const GithubMdxFetcher: IMdxFetcher = class {
           console.error(e);
           return [];
         }
-      }
-    })
-
-
+      },
+    });
   }
 };
