@@ -31,7 +31,7 @@ export default function NavBar() {
     //   </div>
     // </nav>
 
-    <Navbar fluid rounded border={true} className="container">
+    <Navbar fluid rounded border={true}>
       <Navbar.Brand href="/">
         <span className="self-center whitespace-nowrap text-xl font-semibold hover:font-bold">
           Noah Guillory

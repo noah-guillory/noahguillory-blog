@@ -8,6 +8,7 @@ import highlightJsStylesheetUrl from "highlight.js/styles/github-dark.css";
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: highlightJsStylesheetUrl }];
 };
+
 export async function loader({ request }: LoaderArgs) {
   const page = await getMdxPage(
     { contentDir: "about", slug: "about_me" },
