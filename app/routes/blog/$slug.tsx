@@ -1,9 +1,14 @@
-import type { LoaderArgs, MetaFunction } from "@remix-run/node";
+import type { LoaderArgs, MetaFunction , LinksFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import invariant from "tiny-invariant";
 import { useLoaderData } from "@remix-run/react";
 import { getMdxPage } from "~/utils/mdx.server";
 import { getMDXComponent } from "mdx-bundler/client";
+import highlightJsStylesheetUrl from "highlight.js/styles/github-dark.css";
+
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: highlightJsStylesheetUrl }];
+};
 
 export async function loader({ request, params }: LoaderArgs) {
   invariant(params.slug, "Slug not found");

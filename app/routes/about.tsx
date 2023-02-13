@@ -1,10 +1,13 @@
-import type { LoaderArgs, MetaFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import invariant from "tiny-invariant";
 import { getMdxPage } from "~/utils/mdx.server";
 import { useLoaderData } from "@remix-run/react";
 import { getMDXComponent } from "mdx-bundler/client";
+import highlightJsStylesheetUrl from "highlight.js/styles/github-dark.css";
 
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: highlightJsStylesheetUrl }];
+};
 export async function loader({ request }: LoaderArgs) {
   const page = await getMdxPage(
     { contentDir: "about", slug: "about_me" },
