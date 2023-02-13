@@ -1,7 +1,7 @@
 import { LocalMdxFetcher } from "~/utils/mdx-loaders/local.server";
 import { compileMdx } from "~/utils/build-mdx.server";
 import { GithubMdxFetcher } from "~/utils/mdx-loaders/github.server";
-import { cache, cachified, lruCache } from "~/utils/cache.server";
+import { cache, cachified } from "~/utils/cache.server";
 import type { CachifiedOptions } from "~/utils/interfaces";
 
 const checkCompiledValue = (value: unknown) =>
@@ -12,7 +12,7 @@ const defaultTTL = 1000 * 60 * 60 * 24 * 14;
 const defaultStaleWhileRevalidate = 1000 * 60 * 60 * 24 * 30;
 
 const mdxFetcher =
-  process.env.NODE_ENV === "production" ? GithubMdxFetcher : LocalMdxFetcher;
+  process.env.NODE_ENV !== "production" ? GithubMdxFetcher : LocalMdxFetcher;
 
 export async function getMdxPage(
   {
@@ -29,7 +29,7 @@ export async function getMdxPage(
 
   return await cachified({
     key: cacheKey,
-    cache: lruCache,
+    cache,
     request,
     ttl,
     staleWhileRevalidate: defaultStaleWhileRevalidate,

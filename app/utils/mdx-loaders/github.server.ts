@@ -1,6 +1,6 @@
 import type { CachifiedOptions, IMdxFetcher } from "~/utils/interfaces";
 import { Octokit } from "octokit";
-import { cachified, lruCache } from "~/utils/cache.server";
+import { cache, cachified, lruCache } from "~/utils/cache.server";
 
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
@@ -65,19 +65,10 @@ export const GithubMdxFetcher: IMdxFetcher = class {
       ttl: defaultTTL,
       staleWhileRevalidate: defaultStaleWhileRevalidate,
       key,
-      cache: lruCache,
-      checkValue: (value: unknown) => {
-        if (typeof value !== "string") {
-          return "value is not a string";
-        }
-
-        return true;
-      },
+      cache,
       getFreshValue: async () => {
         try {
-          const fileContents = await downloadFile({ contentDir, slug });
-
-          return fileContents;
+          return await downloadFile({ contentDir, slug });
         } catch (e) {
           const error = e as Error;
           if (error.message.includes("not found")) {
@@ -102,6 +93,11 @@ export const GithubMdxFetcher: IMdxFetcher = class {
       ttl: defaultTTL,
       staleWhileRevalidate: defaultStaleWhileRevalidate,
       cache: lruCache,
+      checkValue: (value) => {
+        if (typeof value !== "object") {
+          return "value is not object";
+        }
+      },
       getFreshValue: async () => {
         try {
           const response = await octokit.rest.repos.getContent({
@@ -118,7 +114,7 @@ export const GithubMdxFetcher: IMdxFetcher = class {
           );
         } catch (e) {
           console.error(e);
-          return [];
+          throw e;
         }
       },
     });
