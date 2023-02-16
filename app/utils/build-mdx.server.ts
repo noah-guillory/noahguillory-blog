@@ -20,4 +20,5 @@ export type FrontMatter = {
   title: string;
   subtitle: string;
   publishDate: Date;
+  draft: boolean;
 };

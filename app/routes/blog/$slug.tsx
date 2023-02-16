@@ -43,6 +43,9 @@ export default function BlogPostPage() {
   return (
     <article className="format mx-auto mt-8 text-gray-900 lg:format-lg">
       <h1>{page.frontmatter.title}</h1>
+      {page.frontmatter.draft && (
+        <h1 className="text-red-100">This is an unreleased draft</h1>
+      )}
       <Component />
     </article>
   );

@@ -58,13 +58,15 @@ export async function getMdxFileList(
 
   const dirList = await mdxFetcher.getMdxFileListCached(directory, options);
 
-  return await Promise.all(
+  const pages = await Promise.all(
     dirList.map(async (file) => {
       const page = await getMdxPage({ contentDir: directory, slug: file }, {});
+      console.log(page.frontmatter);
       return {
         ...page,
         slug: file,
       };
     })
   );
+  return pages.filter((page) => page.frontmatter.draft !== true);
 }
