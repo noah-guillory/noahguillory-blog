@@ -61,7 +61,6 @@ export async function getMdxFileList(
   const pages = await Promise.all(
     dirList.map(async (file) => {
       const page = await getMdxPage({ contentDir: directory, slug: file }, {});
-      console.log(page.frontmatter);
       return {
         ...page,
         slug: file,

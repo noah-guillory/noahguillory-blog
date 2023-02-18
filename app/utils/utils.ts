@@ -59,3 +59,13 @@ export function truncateText(
 
   return text.slice(0, maxLength) + truncateSuffix;
 }
+
+export function envMust(key: string): string {
+  const value = process.env[key];
+  if (!value) throw new Error(`No environment variable defined for key ${key}`);
+  return value;
+}
+
+export function envOrDefault(key: string, defaultValue: string): string {
+  return process.env[key] ?? defaultValue;
+}

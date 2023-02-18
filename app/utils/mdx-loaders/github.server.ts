@@ -1,9 +1,10 @@
 import type { CachifiedOptions, IMdxFetcher } from "~/utils/interfaces";
 import { Octokit } from "octokit";
 import { cache, cachified, lruCache } from "~/utils/cache.server";
+import { envMust } from "~/utils/utils";
 
 const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN,
+  auth: envMust("GITHUB_TOKEN"),
 });
 
 const REF = "main";
