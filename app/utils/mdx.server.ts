@@ -11,8 +11,7 @@ const checkCompiledValue = (value: unknown) =>
 const defaultTTL = 1000 * 60 * 60 * 24 * 14;
 const defaultStaleWhileRevalidate = 1000 * 60 * 60 * 24 * 30;
 
-const mdxFetcher =
-  process.env.NODE_ENV === "production" ? GithubMdxFetcher : LocalMdxFetcher;
+const mdxFetcher = GithubMdxFetcher;
 
 export async function getMdxPage(
   {

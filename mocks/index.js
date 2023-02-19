@@ -1,5 +1,5 @@
 const { setupServer } = require("msw/node");
-const { githubHandlers } = require("./handlers/githubHandlers");
+const { githubHandlers } = require("./githubHandlers");
 
 const server = setupServer(...githubHandlers);
 
