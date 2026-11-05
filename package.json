@@ -46,7 +46,7 @@
     "isbot": "^3.6.5",
     "lru-cache": "^7.14.1",
     "mdx-bundler": "^9.2.1",
-    "octokit": "^2.0.14",
+    "octokit": "^3.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rehype-highlight": "^6.0.0",
